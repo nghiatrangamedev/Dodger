@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
         if (_isPlaying)
         {
             DisplayScore();
+            DisplayHighScore();
         }
         
         else
@@ -67,13 +69,40 @@ public class GameManager : MonoBehaviour
         _scoreText.SetText("Score: " + _score);
     }
 
+    void DisplayHighScore()
+    {
+        _highScoreText.SetText("High Score: " + _highScore);
+    }
+
     public void GameOver()
     {
         _isPlaying = false;
+        CheckHighScore();
+        DisplayHighScore();
     }
 
     void DisplayGameOver()
     {
         _gameOver.SetActive(true);
+    }
+
+    void CheckHighScore()
+    {
+        if (_score > _highScore)
+        {
+            _highScore = _score;
+        }
+    }
+
+    public void PlayAgain()
+    {
+        _isPlaying = true;
+        _score = 0;
+        _gameOver.SetActive(false);
+    }
+
+    public void ExitPlayMode()
+    {
+        EditorApplication.ExitPlaymode();
     }
 }
