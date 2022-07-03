@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] SaveData _saveData;
+
     [SerializeField] GameObject _enmies;
     [SerializeField] GameObject _gameOver;
     [SerializeField] TextMeshProUGUI _scoreText;
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         _isPlaying = true;
         InvokeRepeating("SpawnEnemies", _timeDelay, _timeRate);
+        LoadHighScore();
     }
 
     // Update is called once per frame
@@ -91,14 +95,27 @@ public class GameManager : MonoBehaviour
         if (_score > _highScore)
         {
             _highScore = _score;
+            SaveHighScore();
         }
+    }
+
+    void SaveHighScore()
+    {
+        _saveData._highScore = _highScore;
+
+        SaveManager.Save(_saveData);
+    }
+
+    void LoadHighScore()
+    {
+        _saveData = SaveManager.Load();
+        _highScore = _saveData._highScore;
     }
 
     public void PlayAgain()
     {
-        _isPlaying = true;
         _score = 0;
-        _gameOver.SetActive(false);
+        SceneManager.LoadScene("Main Scene");
     }
 
     public void ExitPlayMode()
